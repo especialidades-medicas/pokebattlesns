@@ -40,7 +40,7 @@
             background: linear-gradient(90deg, #ff0050, #00f2fe);
         }
 
-        /* --- ANIMACIONES M.U.G.E.N --- */
+        /* --- ANIMACIONES ESTILO M.U.G.E.N --- */
         @keyframes mugenDashLeft {
             0% { transform: translateX(0) scale(1); }
             30% { transform: translateX(-15px) scale(0.95); }
@@ -67,7 +67,7 @@
 
         /* Fondo del escenario de pelea personalizable */
         #battle-arena-bg {
-            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('src/main/img/stage/default_bg.png');
+            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('img/stage/default_bg.png');
             background-size: cover;
             background-position: center;
         }
@@ -81,8 +81,8 @@
             <div class="inline-block p-3 rounded-full bg-amber-500/20 text-amber-400 text-3xl mb-1">
                 <i class="fa-solid fa-trophy"></i>
             </div>
-            <h2 class="text-2xl font-black text-white">¡FIN DE LA BATALLA!</h2>
-            <p id="game-result-text" class="text-sm text-slate-300">El Pokémon se ha quedado sin Puntos de Vida.</p>
+            <h2 id="game-over-title" class="text-2xl font-black text-white">¡FIN DE LA BATALLA!</h2>
+            <p id="game-result-text" class="text-sm text-slate-300">El tiempo de combate ha concluido.</p>
             
             <div class="bg-slate-800/80 rounded-2xl p-4 border border-slate-700 space-y-2">
                 <p class="text-xs font-bold uppercase tracking-wider text-amber-400">🏆 MVP del Stream (Mayor Apoyo)</p>
@@ -105,13 +105,18 @@
                 <div class="badge-live text-white font-extrabold px-3 py-1 rounded-full text-xs flex items-center gap-1.5 shadow-lg tracking-wider">
                     <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE
                 </div>
+                <!-- TIMER REGRESIVO (3 MINUTOS) -->
+                <div class="bg-slate-900/90 border border-amber-500/40 rounded-full px-4 py-1 text-xs text-amber-300 font-pixel flex items-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-stopwatch text-amber-400"></i>
+                    <span id="match-timer">03:00</span>
+                </div>
                 <div class="bg-slate-900/80 backdrop-blur-md border border-slate-700/60 rounded-full px-3 py-1 text-xs text-slate-200 flex items-center gap-2">
                     <i class="fa-solid fa-users text-pink-400"></i>
-                    <span id="viewer-count" class="font-bold">842</span> Espectadores
+                    <span id="viewer-count" class="font-bold">842</span>
                 </div>
                 <div class="bg-slate-900/80 backdrop-blur-md border border-slate-700/60 rounded-full px-3 py-1 text-xs text-slate-200 flex items-center gap-2">
                     <i class="fa-solid fa-heart text-rose-500"></i>
-                    <span id="like-count" class="font-bold">14,200</span> Likes
+                    <span id="like-count" class="font-bold">14,200</span>
                 </div>
             </div>
         </header>
@@ -155,10 +160,10 @@
                     <div class="flex justify-between items-start mb-2">
                         <div>
                             <div class="flex items-center gap-2">
-                                <h3 id="enemy-name" class="font-extrabold text-lg text-white">Charmander (#004)</h3>
-                                <span class="text-xs bg-rose-500/30 text-rose-300 px-2 py-0.5 rounded font-bold">Rival</span>
+                                <h3 id="enemy-name" class="font-extrabold text-lg text-white">Rival (#003)</h3>
+                                <span class="text-xs bg-rose-500/30 text-rose-300 px-2 py-0.5 rounded font-bold">Rival Automático</span>
                             </div>
-                            <p class="text-xs text-rose-400 font-semibold">Retador TikTok</p>
+                            <p class="text-xs text-rose-400 font-semibold">Ataca c/5s • Cura c/15s • Ulti c/60s</p>
                         </div>
                         <span id="enemy-hp-text" class="font-pixel text-xs text-rose-400">160 / 160 HP</span>
                     </div>
@@ -171,12 +176,12 @@
 
             </div>
 
-            <!-- BATTLEFIELD SPRITES DISPLAY AREA CON IMAGEN TRAS EL PERSONAJE -->
+            <!-- BATTLEFIELD SPRITES DISPLAY AREA -->
             <div class="relative flex-1 w-full max-w-4xl mx-auto flex items-center justify-around px-4 my-2">
                 
                 <!-- PLAYER SPRITE & BACKDROP AURA -->
                 <div class="relative flex flex-col items-center group">
-                    <img id="player-backdrop-img" src="src/main/img/effects/aura_bg.png" alt="Backdrop Effect" class="absolute -inset-6 w-56 h-56 object-contain opacity-40 pointer-events-none animate-pulse">
+                    <img id="player-backdrop-img" src="img/effects/aura_bg.png" alt="Backdrop Effect" class="absolute -inset-6 w-56 h-56 object-contain opacity-40 pointer-events-none animate-pulse">
                     <div class="w-40 h-10 bg-emerald-500/10 rounded-full border border-emerald-500/20 blur-xs absolute bottom-0"></div>
                     <img id="player-sprite" src="" alt="Player Pokémon" class="relative z-10 w-44 h-44 md:w-56 md:h-56 object-contain filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)] transition-transform duration-200">
                 </div>
@@ -211,7 +216,7 @@
                         <i class="fa-solid fa-scroll"></i>
                     </div>
                     <div id="chat-messages" class="text-xs font-semibold text-slate-200 truncate flex-1">
-                        ¡Comenta "1" para atacar o dona para registrarte como MVP en el chat!
+                        ¡Comenta "1" para atacar y envía regalos para acumular puntos MVP!
                     </div>
                 </div>
             </div>
@@ -228,7 +233,7 @@
                 <h2 class="font-black text-slate-100 text-base">Panel TikTok LIVE</h2>
             </div>
             <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">
-                Simulador Activo
+                Batalla Activa
             </span>
         </div>
 
@@ -327,7 +332,6 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
-        // Estructura adaptada para los diferentes gestos/movimientos del Pokémon
         const POKEMON_IMAGES = {
             bulbasaur: {
                 idle: "img/bulbasaur/0001_3.png",
@@ -372,6 +376,13 @@
         let enemyMaxHp = 160;
         let isBattleOver = false;
 
+        // Variables de tiempo e intervalos
+        let timeLeft = 180; // 3 minutos
+        let timerInterval = null;
+        let enemyAttackInterval = null;
+        let enemyHealInterval = null;
+        let enemySpecialInterval = null;
+
         // Registro de contribuciones para el MVP
         let userContributions = {};
 
@@ -398,28 +409,135 @@
             return { user: topUser, reason: razon };
         }
 
+        function iniciarJuego() {
+            // Temporizador regresivo de 3 minutos
+            timerInterval = setInterval(() => {
+                if (isBattleOver) return;
+                timeLeft--;
+                let mins = Math.floor(timeLeft / 60);
+                let secs = timeLeft % 60;
+                document.getElementById("match-timer").innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    finalizarPorTiempo();
+                }
+            }, 1000);
+
+            // Ataque automático del enemigo (Cada 5 segundos)
+            enemyAttackInterval = setInterval(() => {
+                if (isBattleOver) return;
+                enemigoAtacaAutomatico();
+            }, 5000);
+
+            // Curación automática del enemigo (Cada 15 segundos +40 HP)
+            enemyHealInterval = setInterval(() => {
+                if (isBattleOver) return;
+                enemyCurrentHp = Math.min(enemyMaxHp, enemyCurrentHp + 40);
+                showFloatingText(document.getElementById("enemy-container"), "+40 HP (Curación)", "text-emerald-400 font-bold");
+                updateUI();
+            }, 15000);
+
+            // Ataque especial del enemigo (Cada 60 segundos)
+            enemySpecialInterval = setInterval(() => {
+                if (isBattleOver) return;
+                enemigoEspecialAutomatico();
+            }, 60000);
+        }
+
+        function enemigoAtacaAutomatico() {
+            if (isBattleOver) return;
+            const stage = bulbasaurChain.stages[currentStageIndex];
+            const playerSprite = document.getElementById("player-sprite");
+            const enemySprite = document.getElementById("enemy-sprite");
+
+            enemySprite.classList.add("mugen-attack-p1");
+            setTimeout(() => {
+                currentHp = Math.max(0, currentHp - 15);
+                playerSprite.src = stage.images.hit;
+                playerSprite.classList.add("mugen-hit");
+                showFloatingText(document.getElementById("player-container"), "-15 HP (Rival)", "text-rose-400 font-bold");
+                AudioFX.playHit();
+                updateUI();
+                verificarDerrota();
+            }, 150);
+
+            setTimeout(() => {
+                if (!isBattleOver) playerSprite.src = stage.images.idle;
+                playerSprite.classList.remove("mugen-hit");
+                enemySprite.classList.remove("mugen-attack-p1");
+            }, 350);
+        }
+
+        function enemigoEspecialAutomatico() {
+            if (isBattleOver) return;
+            const stage = bulbasaurChain.stages[currentStageIndex];
+            const playerSprite = document.getElementById("player-sprite");
+
+            currentHp = Math.max(0, currentHp - 45);
+            playerSprite.src = stage.images.hit;
+            playerSprite.classList.add("mugen-hit");
+            showFloatingText(document.getElementById("player-container"), "💥 ¡ULTI RIVAL -45 HP!", "text-red-500 font-black text-xl");
+            AudioFX.playHit();
+            updateUI();
+            verificarDerrota();
+
+            setTimeout(() => {
+                if (!isBattleOver) playerSprite.src = stage.images.idle;
+                playerSprite.classList.remove("mugen-hit");
+            }, 500);
+        }
+
         function verificarDerrota() {
             if (currentHp <= 0 && !isBattleOver) {
-                isBattleOver = true;
-                currentHp = 0;
-                
-                // Mostrar gesto de derrota (faint)
-                const stage = bulbasaurChain.stages[currentStageIndex];
-                document.getElementById("player-sprite").src = stage.images.faint;
-
-                // Calcular y mostrar MVP
-                const mvp = obtenerMVP();
-                document.getElementById("mvp-user-name").innerText = mvp.user;
-                document.getElementById("mvp-reason").innerText = `Destacado por: ${mvp.reason}`;
-                document.getElementById("game-result-text").innerText = `¡Tu ${stage.name} se ha quedado sin Puntos de Vida! La pelea ha terminado.`;
-                
-                document.getElementById("game-over-modal").classList.remove("hidden");
-                updateUI();
+                terminarPelea("¡Tu Pokémon fue derrotado!", "El rival se ha quedado con la victoria por K.O.");
             }
+        }
+
+        function finalizarPorTiempo() {
+            if (isBattleOver) return;
+            let playerHpPct = currentHp / maxHp;
+            let enemyHpPct = enemyCurrentHp / enemyMaxHp;
+
+            let titulo = "";
+            let desc = "";
+
+            if (playerHpPct > enemyHpPct) {
+                titulo = "¡TIEMPO AGOTADO - GANASTE POR VIDA! 🏆";
+                desc = "Tu Pokémon conservó un mayor porcentaje de vida al concluir los 3 minutos.";
+            } else if (enemyHpPct > playerHpPct) {
+                titulo = "¡TIEMPO AGOTADO - DERROTA! 💀";
+                desc = "El rival mantuvo mayor porcentaje de vida al finalizar el tiempo.";
+            } else {
+                titulo = "¡EMPATE TÉCNICO! 🤝";
+                desc = "Ambos combatientes terminaron con el mismo porcentaje de salud.";
+            }
+
+            terminarPelea(titulo, desc);
+        }
+
+        function terminarPelea(titulo, descripcion) {
+            isBattleOver = true;
+            clearInterval(timerInterval);
+            clearInterval(enemyAttackInterval);
+            clearInterval(enemyHealInterval);
+            clearInterval(enemySpecialInterval);
+
+            const stage = bulbasaurChain.stages[currentStageIndex];
+            document.getElementById("player-sprite").src = stage.images.faint;
+
+            const mvp = obtenerMVP();
+            document.getElementById("game-over-title").innerText = titulo;
+            document.getElementById("game-result-text").innerText = descripcion;
+            document.getElementById("mvp-user-name").innerText = mvp.user;
+            document.getElementById("mvp-reason").innerText = `Destacado por: ${mvp.reason}`;
+            
+            document.getElementById("game-over-modal").classList.remove("hidden");
+            updateUI();
         }
 
         function reiniciarPelea() {
             isBattleOver = false;
+            timeLeft = 180;
             currentStageIndex = 0;
             currentHp = bulbasaurChain.stages[0].hp;
             maxHp = bulbasaurChain.stages[0].hp;
@@ -427,8 +545,10 @@
             enemyCurrentHp = enemyMaxHp;
             userContributions = {};
             document.getElementById("game-over-modal").classList.add("hidden");
+            document.getElementById("match-timer").innerText = "03:00";
             updateUI();
-            addChatFeed("SISTEMA", "¡Nueva pelea iniciada! ¡Listos para apoyar en el chat!");
+            iniciarJuego();
+            addChatFeed("SISTEMA", "¡Nueva pelea iniciada! Temporizador de 3 minutos activado.");
         }
 
         // Web Audio API Sound Effects
@@ -477,7 +597,7 @@
             
             document.getElementById("poke-name").innerText = `${stage.name} (#${stage.pokedexId})`;
             document.getElementById("stage-badge").innerText = `Fase ${stage.stage} / 3`;
-            if (!isBattleOver) {
+            if (!isBattleOver && currentHp > 0) {
                 document.getElementById("player-sprite").src = stage.images.idle;
             }
             document.getElementById("enemy-sprite").src = POKEMON_IMAGES.enemyDefault;
@@ -509,7 +629,6 @@
             }
         }
 
-        // Simula la interacción del chat de TikTok cuando comentan "1" o "2"
         function simularChat(opcion) {
             if (isBattleOver) return;
             const usuario = document.getElementById("sim-username").value || "@EspectadorAnonimo";
@@ -537,26 +656,6 @@
                     playerSprite.classList.remove("mugen-attack-p1");
                     enemySprite.classList.remove("mugen-hit");
                 }, 350);
-
-            } else if (opcion === '2') {
-                addChatFeed(usuario, "2");
-                enemySprite.classList.add("mugen-attack-p1");
-
-                setTimeout(() => {
-                    currentHp = Math.max(0, currentHp - 20);
-                    playerSprite.src = stage.images.hit; // Gesto al recibir daño
-                    playerSprite.classList.add("mugen-hit");
-                    showFloatingText(document.getElementById("player-container"), "-20 HP", "text-rose-400 font-bold text-xl");
-                    AudioFX.playHit();
-                    updateUI();
-                    verificarDerrota();
-                }, 150);
-
-                setTimeout(() => {
-                    if (!isBattleOver) playerSprite.src = stage.images.idle;
-                    playerSprite.classList.remove("mugen-hit");
-                    enemySprite.classList.remove("mugen-attack-p1");
-                }, 350);
             }
         }
 
@@ -564,7 +663,7 @@
             if (isBattleOver) return;
             const usuario = document.getElementById("sim-username").value || "@EspectadorUlti";
             registrarContribucion(usuario, 35, "Ataque Especial");
-            addChatFeed(usuario, "✨ ¡Ejecutó ATACA ESPECIAL! ✨");
+            addChatFeed(usuario, "✨ ¡Ejecutó ATAQUE ESPECIAL! ✨");
 
             const stage = bulbasaurChain.stages[currentStageIndex];
             const playerSprite = document.getElementById("player-sprite");
@@ -663,7 +762,8 @@
 
         window.onload = function() {
             updateUI();
-            addChatFeed("SISTEMA", "¡Simulador actualizado con fin de pelea, sistema MVP y gestos avanzados!");
+            iniciarJuego();
+            addChatFeed("SISTEMA", "¡Batalla iniciada! Temporizador de 3 minutos activado.");
         };
     </script>
 </body>
