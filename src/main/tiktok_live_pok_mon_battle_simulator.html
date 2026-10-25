@@ -40,7 +40,17 @@
             background: linear-gradient(90deg, #ff0050, #00f2fe);
         }
 
-        /* --- ANIMACIONES ESTILO M.U.G.E.N --- */
+        /* --- ANIMACIONES M.U.G.E.N Y MOVIMIENTO IDLE ADELANTE / ATRÁS --- */
+        @keyframes mugenIdleMove {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(-8px) translateY(-3px); }
+            50% { transform: translateX(0) translateY(0); }
+            75% { transform: translateX(8px) translateY(-2px); }
+        }
+        .mugen-idle {
+            animation: mugenIdleMove 2s infinite ease-in-out;
+        }
+
         @keyframes mugenDashLeft {
             0% { transform: translateX(0) scale(1); }
             30% { transform: translateX(-15px) scale(0.95); }
@@ -65,7 +75,6 @@
         }
         .mugen-evolving { animation: mugenEvolveAura 1.2s infinite ease-in-out; }
 
-        /* Fondo del escenario de pelea personalizable */
         #battle-arena-bg {
             background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('img/stage/default_bg.png');
             background-size: cover;
@@ -183,7 +192,7 @@
                 <div class="relative flex flex-col items-center group">
                     <img id="player-backdrop-img" src="img/effects/aura_bg.png" alt="Backdrop Effect" class="absolute -inset-6 w-56 h-56 object-contain opacity-40 pointer-events-none animate-pulse">
                     <div class="w-40 h-10 bg-emerald-500/10 rounded-full border border-emerald-500/20 blur-xs absolute bottom-0"></div>
-                    <img id="player-sprite" src="" alt="Player Pokémon" class="relative z-10 w-44 h-44 md:w-56 md:h-56 object-contain filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)] transition-transform duration-200">
+                    <img id="player-sprite" src="" alt="Player Pokémon" class="relative z-10 w-44 h-44 md:w-56 md:h-56 object-contain filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)] transition-transform duration-200 mugen-idle">
                 </div>
 
                 <!-- VS BADGE -->
@@ -196,7 +205,7 @@
                 <!-- ENEMY SPRITE -->
                 <div class="relative flex flex-col items-center group">
                     <div class="w-40 h-10 bg-rose-500/10 rounded-full border border-rose-500/20 blur-xs absolute bottom-0"></div>
-                    <img id="enemy-sprite" src="" alt="Enemy Pokémon" class="relative z-10 w-40 h-40 md:w-52 md:h-52 object-contain filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)] transition-all duration-200">
+                    <img id="enemy-sprite" src="" alt="Enemy Pokémon" class="relative z-10 w-40 h-40 md:w-52 md:h-52 object-contain filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)] transition-all duration-200 mugen-idle">
                 </div>
 
             </div>
@@ -450,10 +459,14 @@
             const playerSprite = document.getElementById("player-sprite");
             const enemySprite = document.getElementById("enemy-sprite");
 
+            // Quitar idle momentáneamente para realizar el ataque
+            enemySprite.classList.remove("mugen-idle");
             enemySprite.classList.add("mugen-attack-p1");
+            
             setTimeout(() => {
                 currentHp = Math.max(0, currentHp - 15);
                 playerSprite.src = stage.images.hit;
+                playerSprite.classList.remove("mugen-idle");
                 playerSprite.classList.add("mugen-hit");
                 showFloatingText(document.getElementById("player-container"), "-15 HP (Rival)", "text-rose-400 font-bold");
                 AudioFX.playHit();
@@ -462,9 +475,13 @@
             }, 150);
 
             setTimeout(() => {
-                if (!isBattleOver) playerSprite.src = stage.images.idle;
-                playerSprite.classList.remove("mugen-hit");
+                if (!isBattleOver) {
+                    playerSprite.src = stage.images.idle;
+                    playerSprite.classList.remove("mugen-hit");
+                    playerSprite.classList.add("mugen-idle");
+                }
                 enemySprite.classList.remove("mugen-attack-p1");
+                enemySprite.classList.add("mugen-idle");
             }, 350);
         }
 
@@ -474,6 +491,7 @@
             const playerSprite = document.getElementById("player-sprite");
 
             currentHp = Math.max(0, currentHp - 45);
+            playerSprite.classList.remove("mugen-idle");
             playerSprite.src = stage.images.hit;
             playerSprite.classList.add("mugen-hit");
             showFloatingText(document.getElementById("player-container"), "💥 ¡ULTI RIVAL -45 HP!", "text-red-500 font-black text-xl");
@@ -482,8 +500,11 @@
             verificarDerrota();
 
             setTimeout(() => {
-                if (!isBattleOver) playerSprite.src = stage.images.idle;
-                playerSprite.classList.remove("mugen-hit");
+                if (!isBattleOver) {
+                    playerSprite.src = stage.images.idle;
+                    playerSprite.classList.remove("mugen-hit");
+                    playerSprite.classList.add("mugen-idle");
+                }
             }, 500);
         }
 
@@ -523,7 +544,9 @@
             clearInterval(enemySpecialInterval);
 
             const stage = bulbasaurChain.stages[currentStageIndex];
-            document.getElementById("player-sprite").src = stage.images.faint;
+            const playerSprite = document.getElementById("player-sprite");
+            playerSprite.classList.remove("mugen-idle");
+            playerSprite.src = stage.images.faint;
 
             const mvp = obtenerMVP();
             document.getElementById("game-over-title").innerText = titulo;
@@ -546,6 +569,12 @@
             userContributions = {};
             document.getElementById("game-over-modal").classList.add("hidden");
             document.getElementById("match-timer").innerText = "03:00";
+            
+            const playerSprite = document.getElementById("player-sprite");
+            playerSprite.classList.add("mugen-idle");
+            const enemySprite = document.getElementById("enemy-sprite");
+            enemySprite.classList.add("mugen-idle");
+
             updateUI();
             iniciarJuego();
             addChatFeed("SISTEMA", "¡Nueva pelea iniciada! Temporizador de 3 minutos activado.");
@@ -640,11 +669,13 @@
 
             if (opcion === '1') {
                 addChatFeed(usuario, "1");
+                playerSprite.classList.remove("mugen-idle");
                 playerSprite.src = stage.images.attack;
                 playerSprite.classList.add("mugen-attack-p1");
 
                 setTimeout(() => {
                     enemyCurrentHp = Math.max(0, enemyCurrentHp - 25);
+                    enemySprite.classList.remove("mugen-idle");
                     enemySprite.classList.add("mugen-hit");
                     showFloatingText(document.getElementById("enemy-container"), "-25 HP", "text-rose-500 font-bold text-xl");
                     AudioFX.playHit();
@@ -652,9 +683,13 @@
                 }, 150);
 
                 setTimeout(() => {
-                    if (!isBattleOver) playerSprite.src = stage.images.idle;
+                    if (!isBattleOver) {
+                        playerSprite.src = stage.images.idle;
+                        playerSprite.classList.add("mugen-idle");
+                    }
                     playerSprite.classList.remove("mugen-attack-p1");
                     enemySprite.classList.remove("mugen-hit");
+                    enemySprite.classList.add("mugen-idle");
                 }, 350);
             }
         }
@@ -668,6 +703,7 @@
             const stage = bulbasaurChain.stages[currentStageIndex];
             const playerSprite = document.getElementById("player-sprite");
             
+            playerSprite.classList.remove("mugen-idle");
             playerSprite.src = stage.images.special;
             playerSprite.classList.add("mugen-evolving");
 
@@ -675,7 +711,10 @@
                 enemyCurrentHp = Math.max(0, enemyCurrentHp - 50);
                 showFloatingText(document.getElementById("enemy-container"), "-50 ULT!", "text-purple-400 font-extrabold text-2xl");
                 playerSprite.classList.remove("mugen-evolving");
-                if (!isBattleOver) playerSprite.src = stage.images.idle;
+                if (!isBattleOver) {
+                    playerSprite.src = stage.images.idle;
+                    playerSprite.classList.add("mugen-idle");
+                }
                 updateUI();
             }, 1000);
         }
@@ -701,10 +740,12 @@
             
             AudioFX.playEvolve();
             const playerSprite = document.getElementById("player-sprite");
+            playerSprite.classList.remove("mugen-idle");
             playerSprite.classList.add("mugen-evolving");
 
             setTimeout(() => {
                 playerSprite.classList.remove("mugen-evolving");
+                playerSprite.classList.add("mugen-idle");
                 updateUI();
             }, 1200);
 
@@ -763,7 +804,7 @@
         window.onload = function() {
             updateUI();
             iniciarJuego();
-            addChatFeed("SISTEMA", "¡Batalla iniciada! Temporizador de 3 minutos activado.");
+            addChatFeed("SISTEMA", "¡Batalla iniciada con movimiento dinámico adelante/atrás estilo M.U.G.E.N!");
         };
     </script>
 </body>
