@@ -194,4 +194,364 @@
                     <button id="move-btn" onclick="playerAttack()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all transform active:scale-95 flex items-center gap-2">
                         ⚡ Látigo Cepa
                     </button>
-                    <button onclick="tapBoostHp()" class="px-6 py-2.5 bg-pink-600 hover:bg-pink-500 text
+                    <button onclick="tapBoostHp()" class="px-6 py-2.5 bg-pink-600 hover:bg-pink-500 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all transform active:scale-95 flex items-center gap-2">
+                        ❤️ Tap-Tap (Curar HP)
+                    </button>
+                </div>
+                <div class="bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-2xl p-3 shadow-2xl flex items-center gap-3">
+                    <div class="bg-amber-500/20 text-amber-400 p-2 rounded-xl text-base flex items-center justify-center">
+                        <i class="fa-solid fa-scroll"></i>
+                    </div>
+                    <div id="chat-messages" class="text-xs font-semibold text-slate-200 truncate flex-1">
+                        ¡Comenta "1" para apoyar al Jugador 1 o "2" para apoyar al Jugador 2 en el chat!
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- SIDEBAR: TIKTOK LIVE CONTROL PANEL -->
+    <aside class="w-full lg:w-96 bg-slate-900 border-t lg:border-t-0 lg:border-l border-slate-800 flex flex-col h-auto lg:h-full z-40 shadow-2xl">
+        
+        <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+            <div class="flex items-center gap-2">
+                <i class="fa-brands fa-tiktok text-pink-500 text-xl"></i>
+                <h2 class="font-black text-slate-100 text-base">Panel TikTok LIVE</h2>
+            </div>
+            <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">
+                Simulador Activo
+            </span>
+        </div>
+
+        <div class="p-4 flex-1 overflow-y-auto space-y-5">
+
+            <!-- SIMULAR CHAT (1 o 2) -->
+            <div class="bg-slate-800/60 border border-slate-700/70 rounded-2xl p-4 space-y-3">
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                    <i class="fa-solid fa-comments text-cyan-400 mr-1"></i> Simular Comentarios de Chat
+                </label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="simularChat('1')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow">
+                        Comentar "1" (P1 Ataca)
+                    </button>
+                    <button onclick="simularChat('2')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow">
+                        Comentar "2" (P2 Ataca)
+                    </button>
+                </div>
+            </div>
+
+            <!-- SELECT POKEMON MANUALLY -->
+            <div class="bg-slate-800/60 border border-slate-700/70 rounded-2xl p-4 space-y-3">
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                    <i class="fa-solid fa-paw text-cyan-400 mr-1"></i> Evolución / Fases (Bulbasaur)
+                </label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="selectStageByQuery('1')" class="bg-slate-900 hover:bg-emerald-600/30 border border-emerald-500/40 py-2 rounded-xl text-xs font-bold text-emerald-300 transition-all">
+                        #1 Bulbasaur
+                    </button>
+                    <button onclick="selectStageByQuery('2')" class="bg-slate-900 hover:bg-emerald-600/30 border border-emerald-500/40 py-2 rounded-xl text-xs font-bold text-emerald-300 transition-all">
+                        #2 Ivysaur
+                    </button>
+                    <button onclick="selectStageByQuery('3')" class="bg-slate-900 hover:bg-emerald-600/30 border border-emerald-500/40 py-2 rounded-xl text-xs font-bold text-emerald-300 transition-all">
+                        #3 Venusaur
+                    </button>
+                </div>
+            </div>
+
+            <!-- SIMULATE GIFTS -->
+            <div class="bg-slate-800/60 border border-slate-700/70 rounded-2xl p-4 space-y-3">
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                    <i class="fa-solid fa-gift text-amber-400 mr-1"></i> Simular Regalos TikTok
+                </label>
+
+                <div class="grid grid-cols-1 gap-2">
+                    <button onclick="sendGift('rose')" class="bg-slate-900 hover:bg-slate-700 border border-rose-500/40 p-2.5 rounded-xl flex items-center justify-between text-xs transition-all">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🌹</span>
+                            <div class="text-left">
+                                <p class="font-bold text-rose-300">Regalo: Rosa</p>
+                                <p class="text-[10px] text-slate-400">+15 EXP</p>
+                            </div>
+                        </div>
+                        <span class="bg-rose-500/20 text-rose-300 font-bold px-2 py-1 rounded-lg">Enviar</span>
+                    </button>
+
+                    <button onclick="sendGift('donut')" class="bg-slate-900 hover:bg-slate-700 border border-amber-500/40 p-2.5 rounded-xl flex items-center justify-between text-xs transition-all">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🍩</span>
+                            <div class="text-left">
+                                <p class="font-bold text-amber-300">Regalo: Dónut</p>
+                                <p class="text-[10px] text-slate-400">+60 EXP (Evolución)</p>
+                            </div>
+                        </div>
+                        <span class="bg-amber-500/20 text-amber-300 font-bold px-2 py-1 rounded-lg">Enviar</span>
+                    </button>
+
+                    <button onclick="sendGift('crown')" class="bg-slate-900 hover:bg-slate-700 border border-purple-500/40 p-2.5 rounded-xl flex items-center justify-between text-xs transition-all">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">👑</span>
+                            <div class="text-left">
+                                <p class="font-bold text-purple-300">Regalo: Corona Ulti</p>
+                                <p class="text-[10px] text-slate-400">+150 EXP / Max Evolución</p>
+                            </div>
+                        </div>
+                        <span class="bg-purple-500/20 text-purple-300 font-bold px-2 py-1 rounded-lg">Enviar</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIVE CHAT STREAM FEED -->
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 h-48 flex flex-col justify-between">
+                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">
+                    Feed de TikTok Live (Chat Simulado)
+                </span>
+                <div id="live-chat-box" class="overflow-y-auto space-y-1.5 text-xs pr-1 flex-1">
+                    <p class="text-slate-400"><span class="text-pink-400 font-bold">@PokeFan99:</span> ¡Comenten 1 o 2 para decidir la batalla! 🌱</p>
+                </div>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        // Rutas locales de imágenes estructuradas en src/main/img/
+        const POKEMON_IMAGES = {
+            bulbasaur: {
+                idle: "src/main/img/bulbasaur/idle.png",
+                attack: "src/main/img/bulbasaur/attack.png",
+                evolve: "src/main/img/bulbasaur/evolve.png"
+            },
+            ivysaur: {
+                idle: "src/main/img/ivysaur/idle.png",
+                attack: "src/main/img/ivysaur/attack.png"
+            },
+            venusaur: {
+                idle: "src/main/img/venusaur/idle.png",
+                attack: "src/main/img/venusaur/attack.png"
+            },
+            enemyDefault: "src/main/img/enemy/charmander.png"
+        };
+
+        const bulbasaurChain = {
+            stages: [
+                { stage: 1, name: "Bulbasaur", pokedexId: "001", images: POKEMON_IMAGES.bulbasaur, hp: 180, attack: 25, moveName: "Látigo Cepa", evolveReq: 100 },
+                { stage: 2, name: "Ivysaur", pokedexId: "002", images: POKEMON_IMAGES.ivysaur, hp: 260, attack: 45, moveName: "Hoja Afilada", evolveReq: 300 },
+                { stage: 3, name: "Venusaur", pokedexId: "003", images: POKEMON_IMAGES.venusaur, hp: 400, attack: 85, moveName: "Rayo Solar", evolveReq: 500 }
+            ]
+        };
+
+        let currentStageIndex = 0;
+        let currentHp = bulbasaurChain.stages[0].hp;
+        let maxHp = bulbasaurChain.stages[0].hp;
+        let currentExp = 0;
+        let streamerLikes = 14200;
+        let liveViewers = 842;
+
+        let enemyCurrentHp = 160;
+        let enemyMaxHp = 160;
+
+        // Web Audio API Sound Effects
+        const AudioFX = {
+            ctx: null,
+            init() {
+                if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            },
+            playHit() {
+                this.init();
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.15);
+            },
+            playEvolve() {
+                this.init();
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(261.63, now);
+                osc.frequency.setValueAtTime(329.63, now + 0.1);
+                osc.frequency.setValueAtTime(392.00, now + 0.2);
+                osc.frequency.setValueAtTime(523.25, now + 0.3);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.6);
+            }
+        };
+
+        function updateUI() {
+            const stage = bulbasaurChain.stages[currentStageIndex];
+            
+            document.getElementById("poke-name").innerText = `${stage.name} (#${stage.pokedexId})`;
+            document.getElementById("stage-badge").innerText = `Fase ${stage.stage} / 3`;
+            document.getElementById("player-sprite").src = stage.images.idle;
+            document.getElementById("enemy-sprite").src = POKEMON_IMAGES.enemyDefault;
+
+            const hpPercent = Math.max(0, Math.min(100, (currentHp / maxHp) * 100));
+            document.getElementById("player-hp-bar").style.width = `${hpPercent}%`;
+            document.getElementById("player-hp-text").innerText = `${currentHp} / ${maxHp} HP`;
+            
+            const nextExpReq = stage.evolveReq;
+            const expPercent = currentStageIndex === 2 ? 100 : Math.min(100, (currentExp / nextExpReq) * 100);
+            document.getElementById("exp-bar").style.width = `${expPercent}%`;
+            document.getElementById("exp-text").innerText = currentStageIndex === 2 ? 'NIVEL MÁXIMO' : `${currentExp} / ${nextExpReq} EXP`;
+
+            document.getElementById("like-count").innerText = streamerLikes.toLocaleString();
+            document.getElementById("viewer-count").innerText = liveViewers.toLocaleString();
+            document.getElementById("move-btn").innerText = `⚡ ${stage.moveName}`;
+
+            const enemyHpPercent = Math.max(0, Math.min(100, (enemyCurrentHp / enemyMaxHp) * 100));
+            document.getElementById("enemy-hp-bar").style.width = `${enemyHpPercent}%`;
+            document.getElementById("enemy-hp-text").innerText = `${enemyCurrentHp} / ${enemyMaxHp} HP`;
+        }
+
+        function tapBoostHp() {
+            if (currentHp < maxHp) {
+                currentHp = Math.min(maxHp, currentHp + 4);
+                showFloatingText(document.getElementById("player-container"), "+4 HP", "text-emerald-400");
+                updateUI();
+            }
+        }
+
+        // Simula la interacción del chat de TikTok cuando comentan "1" o "2"
+        function simularChat(opcion) {
+            const stage = bulbasaurChain.stages[currentStageIndex];
+            const playerSprite = document.getElementById("player-sprite");
+            const enemySprite = document.getElementById("enemy-sprite");
+
+            if (opcion === '1') {
+                // Jugador 1 Ataca (M.U.G.E.N Dash Animation)
+                addChatFeed("UsuarioChat", "1");
+                playerSprite.src = stage.images.attack;
+                playerSprite.classList.add("mugen-attack-p1");
+
+                setTimeout(() => {
+                    enemyCurrentHp = Math.max(0, enemyCurrentHp - 25);
+                    enemySprite.classList.add("mugen-hit");
+                    showFloatingText(document.getElementById("enemy-container"), "-25 HP", "text-rose-500 font-bold text-xl");
+                    AudioFX.playHit();
+                    updateUI();
+                }, 150);
+
+                setTimeout(() => {
+                    playerSprite.src = stage.images.idle;
+                    playerSprite.classList.remove("mugen-attack-p1");
+                    enemySprite.classList.remove("mugen-hit");
+                }, 350);
+
+            } else if (opcion === '2') {
+                // Jugador 2 (Rival) Ataca de vuelta
+                addChatFeed("UsuarioChat", "2");
+                enemySprite.classList.add("mugen-attack-p1"); // Efecto de embestida rival
+
+                setTimeout(() => {
+                    currentHp = Math.max(0, currentHp - 20);
+                    playerSprite.classList.add("mugen-hit");
+                    showFloatingText(document.getElementById("player-container"), "-20 HP", "text-rose-400 font-bold text-xl");
+                    AudioFX.playHit();
+                    updateUI();
+                }, 150);
+
+                setTimeout(() => {
+                    playerSprite.classList.remove("mugen-hit");
+                    enemySprite.classList.remove("mugen-attack-p1");
+                }, 350);
+            }
+        }
+
+        function playerAttack() {
+            simularChat('1');
+        }
+
+        function selectStageByQuery(query) {
+            const idx = parseInt(query) - 1;
+            if (idx >= 0 && idx < bulbasaurChain.stages.length) {
+                setStage(idx);
+            }
+        }
+
+        function setStage(index) {
+            currentStageIndex = index;
+            const stage = bulbasaurChain.stages[currentStageIndex];
+            maxHp = stage.hp;
+            currentHp = stage.hp;
+            currentExp = 0;
+            
+            AudioFX.playEvolve();
+            const playerSprite = document.getElementById("player-sprite");
+            playerSprite.classList.add("mugen-evolving");
+
+            setTimeout(() => {
+                playerSprite.classList.remove("mugen-evolving");
+                updateUI();
+            }, 1200);
+
+            addChatFeed("EVOLUCIÓN", `¡Tu Pokémon evolucionó a ${stage.name}! ✨`);
+            updateUI();
+        }
+
+        function addExp(amount) {
+            if (currentStageIndex >= 2) return;
+            currentExp += amount;
+            const req = bulbasaurChain.stages[currentStageIndex].evolveReq;
+            
+            if (currentExp >= req) {
+                setStage(currentStageIndex + 1);
+            } else {
+                updateUI();
+            }
+        }
+
+        function sendGift(giftType) {
+            let expGained = 0;
+            let giftName = "";
+            
+            if (giftType === 'rose') { expGained = 15; giftName = "Rosa 🌹"; streamerLikes += 50; }
+            else if (giftType === 'donut') { expGained = 60; giftName = "Donut 🍩"; streamerLikes += 250; }
+            else if (giftType === 'crown') { expGained = 150; giftName = "Corona 👑"; streamerLikes += 1000; }
+
+            addExp(expGained);
+            addChatFeed("TikTokGift", `¡Envió ${giftName}! (+${expGained} EXP)`);
+            showFloatingText(document.getElementById("player-container"), `+${expGained} EXP`, "text-amber-300 font-bold");
+        }
+
+        function addChatFeed(user, text) {
+            const chatBox = document.getElementById("live-chat-box");
+            const msgDiv = document.createElement("div");
+            msgDiv.className = "bg-slate-900 p-2 rounded-lg border border-slate-800 text-xs";
+            msgDiv.innerHTML = `<span class="font-bold text-pink-400">${user}:</span> <span class="text-slate-200">${text}</span>`;
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showFloatingText(container, text, colorClass) {
+            const el = document.createElement("div");
+            el.className = `absolute text-lg ${colorClass} float-text z-50`;
+            el.innerText = text;
+            el.style.left = "50%";
+            el.style.top = "40%";
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 1200);
+        }
+
+        window.onload = function() {
+            updateUI();
+            addChatFeed("SISTEMA", "¡Simulador configurado con rutas locales y animaciones estilo M.U.G.E.N!");
+        };
+    </script>
+</body>
+</html>
