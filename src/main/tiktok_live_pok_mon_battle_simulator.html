@@ -40,16 +40,14 @@
             background: linear-gradient(90deg, #ff0050, #00f2fe);
         }
 
-        /* --- EFECTOS ESTILO M.U.G.E.N --- */
+        /* --- ANIMACIONES M.U.G.E.N --- */
         @keyframes mugenDashLeft {
             0% { transform: translateX(0) scale(1); }
             30% { transform: translateX(-15px) scale(0.95); }
             50% { transform: translateX(70px) scale(1.1); }
             100% { transform: translateX(0) scale(1); }
         }
-        .mugen-attack-p1 {
-            animation: mugenDashLeft 0.35s ease-in-out;
-        }
+        .mugen-attack-p1 { animation: mugenDashLeft 0.35s ease-in-out; }
 
         @keyframes mugenHitShake {
             0%, 100% { transform: translateX(0); filter: brightness(1); }
@@ -58,21 +56,45 @@
             60% { transform: translateX(-6px); }
             80% { transform: translateX(6px); }
         }
-        .mugen-hit {
-            animation: mugenHitShake 0.4s ease-in-out;
-        }
+        .mugen-hit { animation: mugenHitShake 0.4s ease-in-out; }
 
         @keyframes mugenEvolveAura {
             0% { filter: drop-shadow(0 0 5px #fff) brightness(1); transform: scale(1); }
             50% { filter: drop-shadow(0 0 35px #38bdf8) brightness(2.2) contrast(1.5); transform: scale(1.12); }
             100% { filter: drop-shadow(0 0 5px #fff) brightness(1); transform: scale(1); }
         }
-        .mugen-evolving {
-            animation: mugenEvolveAura 1.2s infinite ease-in-out;
+        .mugen-evolving { animation: mugenEvolveAura 1.2s infinite ease-in-out; }
+
+        /* Estilo para el fondo del escenario personalizable */
+        #battle-arena-bg {
+            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('src/main/img/stage/default_bg.png');
+            background-size: cover;
+            background-position: center;
         }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col lg:flex-row bg-slate-950">
+
+    <!-- MODAL DE FIN DE PELEA Y MVP -->
+    <div id="game-over-modal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border-2 border-amber-500/50 rounded-3xl max-w-md w-full p-6 text-center shadow-2xl space-y-4">
+            <div class="inline-block p-3 rounded-full bg-amber-500/20 text-amber-400 text-3xl mb-1">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h2 class="text-2xl font-black text-white">¡FIN DE LA BATALLA!</h2>
+            <p id="game-result-text" class="text-sm text-slate-300">El Pokémon se ha quedado sin Puntos de Vida.</p>
+            
+            <div class="bg-slate-800/80 rounded-2xl p-4 border border-slate-700 space-y-2">
+                <p class="text-xs font-bold uppercase tracking-wider text-amber-400">🏆 MVP del Stream (Mayor Apoyo)</p>
+                <p id="mvp-user-name" class="text-lg font-black text-white">@PokeFan99</p>
+                <p id="mvp-reason" class="text-xs text-slate-400">¡Apoyó con más regalos y comentarios clave!</p>
+            </div>
+
+            <button onclick="reiniciarPelea()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black rounded-xl shadow-lg transition-all">
+                🔄 Iniciar Nueva Pelea
+            </button>
+        </div>
+    </div>
 
     <!-- MAIN STREAM CANVAS / DISPLAY AREA -->
     <main class="relative flex-1 h-full flex flex-col justify-between overflow-hidden bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-950 border-r border-slate-800">
@@ -92,25 +114,10 @@
                     <span id="like-count" class="font-bold">14,200</span> Likes
                 </div>
             </div>
-
-            <!-- STREAM HUD RULES / GUIDE -->
-            <div class="bg-slate-900/90 backdrop-blur-md border border-indigo-500/30 rounded-2xl p-2.5 shadow-2xl flex items-center gap-4 pointer-events-auto text-xs hidden md:flex">
-                <div class="flex items-center gap-1.5 text-emerald-400 font-bold">
-                    <i class="fa-solid fa-hand-pointer animate-bounce"></i> Tap-Tap = +2 HP
-                </div>
-                <div class="h-4 w-px bg-slate-700"></div>
-                <div class="flex items-center gap-1.5 text-rose-400 font-bold">
-                    <span>🌹 Rosa</span> = +15 EXP
-                </div>
-                <div class="h-4 w-px bg-slate-700"></div>
-                <div class="flex items-center gap-1.5 text-amber-400 font-bold">
-                    <span>🍩 Donut</span> = +60 EXP / Evolución
-                </div>
-            </div>
         </header>
 
-        <!-- BATTLE ARENA MAIN SCREEN -->
-        <section class="relative z-10 h-full w-full flex flex-col justify-between p-4 md:p-8 pt-20">
+        <!-- BATTLE ARENA MAIN SCREEN CON FONDO PERSONALIZABLE -->
+        <section id="battle-arena-bg" class="relative z-10 h-full w-full flex flex-col justify-between p-4 md:p-8 pt-20">
             
             <!-- TOP HEALTH BARS & STATUS HUD -->
             <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto">
@@ -149,7 +156,7 @@
                         <div>
                             <div class="flex items-center gap-2">
                                 <h3 id="enemy-name" class="font-extrabold text-lg text-white">Charmander (#004)</h3>
-                                <span class="text-xs bg-rose-500/30 text-rose-300 px-2 py-0.5 rounded font-bold">Rival (Jugador 2)</span>
+                                <span class="text-xs bg-rose-500/30 text-rose-300 px-2 py-0.5 rounded font-bold">Rival</span>
                             </div>
                             <p class="text-xs text-rose-400 font-semibold">Retador TikTok</p>
                         </div>
@@ -164,11 +171,13 @@
 
             </div>
 
-            <!-- BATTLEFIELD SPRITES DISPLAY AREA -->
+            <!-- BATTLEFIELD SPRITES DISPLAY AREA CON IMAGEN TRAS EL PERSONAJE -->
             <div class="relative flex-1 w-full max-w-4xl mx-auto flex items-center justify-around px-4 my-2">
                 
-                <!-- PLAYER SPRITE -->
+                <!-- PLAYER SPRITE & BACKDROP AURA -->
                 <div class="relative flex flex-col items-center group">
+                    <!-- Imagen o efecto detrás del personaje -->
+                    <img id="player-backdrop-img" src="src/main/img/effects/aura_bg.png" alt="Backdrop Effect" class="absolute -inset-6 w-56 h-56 object-contain opacity-50 pointer-events-none animate-pulse">
                     <div class="w-40 h-10 bg-emerald-500/10 rounded-full border border-emerald-500/20 blur-xs absolute bottom-0"></div>
                     <img id="player-sprite" src="" alt="Player Pokémon" class="relative z-10 w-44 h-44 md:w-56 md:h-56 object-contain filter drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)] transition-transform duration-200">
                 </div>
@@ -203,7 +212,7 @@
                         <i class="fa-solid fa-scroll"></i>
                     </div>
                     <div id="chat-messages" class="text-xs font-semibold text-slate-200 truncate flex-1">
-                        ¡Comenta "1" para apoyar al Jugador 1 o "2" para apoyar al Jugador 2 en el chat!
+                        ¡Comenta "1" para atacar con movimientos especiales o dona para registrarte como MVP!
                     </div>
                 </div>
             </div>
@@ -226,18 +235,21 @@
 
         <div class="p-4 flex-1 overflow-y-auto space-y-5">
 
-            <!-- SIMULAR CHAT (1 o 2) -->
+            <!-- SIMULAR CHAT CON USUARIOS -->
             <div class="bg-slate-800/60 border border-slate-700/70 rounded-2xl p-4 space-y-3">
                 <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-                    <i class="fa-solid fa-comments text-cyan-400 mr-1"></i> Simular Comentarios de Chat
+                    <i class="fa-solid fa-comments text-cyan-400 mr-1"></i> Simular Chat y MVP
                 </label>
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="simularChat('1')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow">
-                        Comentar "1" (P1 Ataca)
-                    </button>
-                    <button onclick="simularChat('2')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow">
-                        Comentar "2" (P2 Ataca)
-                    </button>
+                <div class="space-y-2">
+                    <input type="text" id="sim-username" placeholder="@NombreUsuario" value="@CarlosGamer" class="w-full bg-slate-900 border border-slate-700 text-xs rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-indigo-500">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="simularComentarioChat('1')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow">
+                            💬 Comentar "1" (Ataque)
+                        </button>
+                        <button onclick="simularEspecialChat()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow">
+                            ✨ Ataque Especial (Ulti)
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -262,7 +274,7 @@
             <!-- SIMULATE GIFTS -->
             <div class="bg-slate-800/60 border border-slate-700/70 rounded-2xl p-4 space-y-3">
                 <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-                    <i class="fa-solid fa-gift text-amber-400 mr-1"></i> Simular Regalos TikTok
+                    <i class="fa-solid fa-gift text-amber-400 mr-1"></i> Simular Regalos TikTok (Suman MVP)
                 </label>
 
                 <div class="grid grid-cols-1 gap-2">
@@ -287,27 +299,16 @@
                         </div>
                         <span class="bg-amber-500/20 text-amber-300 font-bold px-2 py-1 rounded-lg">Enviar</span>
                     </button>
-
-                    <button onclick="sendGift('crown')" class="bg-slate-900 hover:bg-slate-700 border border-purple-500/40 p-2.5 rounded-xl flex items-center justify-between text-xs transition-all">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xl">👑</span>
-                            <div class="text-left">
-                                <p class="font-bold text-purple-300">Regalo: Corona Ulti</p>
-                                <p class="text-[10px] text-slate-400">+150 EXP / Max Evolución</p>
-                            </div>
-                        </div>
-                        <span class="bg-purple-500/20 text-purple-300 font-bold px-2 py-1 rounded-lg">Enviar</span>
-                    </button>
                 </div>
             </div>
 
             <!-- LIVE CHAT STREAM FEED -->
             <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 h-48 flex flex-col justify-between">
                 <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">
-                    Feed de TikTok Live (Chat Simulado)
+                    Feed de TikTok Live
                 </span>
                 <div id="live-chat-box" class="overflow-y-auto space-y-1.5 text-xs pr-1 flex-1">
-                    <p class="text-slate-400"><span class="text-pink-400 font-bold">@PokeFan99:</span> ¡Comenten 1 o 2 para decidir la batalla! 🌱</p>
+                    <p class="text-slate-400"><span class="text-pink-400 font-bold">@PokeFan99:</span> ¡Comenten 1 para atacar! 🌱</p>
                 </div>
             </div>
 
@@ -316,20 +317,33 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
-        // Rutas locales de imágenes estructuradas en src/main/img/
+        // Estructura expandida con 10 movimientos/gestos por Pokémon
         const POKEMON_IMAGES = {
             bulbasaur: {
-                idle: "img/bulbasaur/0001_3.png",
-                attack: "img/bulbasaur/0001_atack.png",
-                evolve: "img/bulbasaur/0001_10.png"
+                idle: "src/main/img/bulbasaur/0001_3.png",
+                attack: "src/main/img/bulbasaur/0001_atack.png",
+                special: "src/main/img/bulbasaur/0001_atack.png",
+                hit: "src/main/img/bulbasaur/0001_0.png",
+                faint: "src/main/img/bulbasaur/0001_5.png",
+                evolve: "src/main/img/bulbasaur/0001_1.png",
+                move7: "src/main/img/bulbasaur/0001_2.png",
+                move8: "src/main/img/bulbasaur/0001_3.png",
+                move9: "src/main/img/bulbasaur/0001_4.png",
+                move10: "src/main/img/bulbasaur/0001_5.png"
             },
             ivysaur: {
-                idle: "img/ivysaur/idle.png",
-                attack: "img/ivysaur/attack.png"
+                idle: "src/main/img/ivysaur/0002_2.png",
+                attack: "src/main/img/ivysaur/0002_2.png",
+                special: "src/main/img/ivysaur/0002_2.png",
+                hit: "src/main/img/ivysaur/0002_2.png",
+                faint: "src/main/img/ivysaur/0002_2.png"
             },
             venusaur: {
-                idle: "src/main/img/venusaur/idle.png",
-                attack: "src/main/img/venusaur/attack.png"
+                idle: "src/main/img/venusaur/ev3.png",
+                attack: "src/main/img/venusaur/ev3.png",
+                special: "src/main/img/venusaur/ev3.png",
+                hit: "src/main/img/venusaur/ev3.png",
+                faint: "src/main/img/venusaur/ev3.png"
             },
             enemyDefault: "src/main/img/enemy/charmander.png"
         };
@@ -348,57 +362,78 @@
         let currentExp = 0;
         let streamerLikes = 14200;
         let liveViewers = 842;
-
         let enemyCurrentHp = 160;
         let enemyMaxHp = 160;
+        let isBattleOver = false;
 
-        // Web Audio API Sound Effects
-        const AudioFX = {
-            ctx: null,
-            init() {
-                if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-            },
-            playHit() {
-                this.init();
-                if (this.ctx.state === 'suspended') this.ctx.resume();
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, this.ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.15);
-            },
-            playEvolve() {
-                this.init();
-                if (this.ctx.state === 'suspended') this.ctx.resume();
-                const now = this.ctx.currentTime;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(261.63, now);
-                osc.frequency.setValueAtTime(329.63, now + 0.1);
-                osc.frequency.setValueAtTime(392.00, now + 0.2);
-                osc.frequency.setValueAtTime(523.25, now + 0.3);
-                gain.gain.setValueAtTime(0.3, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(now + 0.6);
+        // Registro de contribuciones para calcular el MVP (Persona que ayudó con más regalos o comentarios)
+        let userContributions = {};
+
+        function registrarContribucion(usuario, puntos, motivo) {
+            if (!userContributions[usuario]) {
+                userContributions[usuario] = { score: 0, actions: 0, details: motivo };
             }
-        };
+            userContributions[usuario].score += puntos;
+            userContributions[usuario].actions += 1;
+        }
+
+        function obtenerMVP() {
+            let topUser = "Nadie (Sin participación)";
+            let maxScore = -1;
+            let razon = "Participación general en el chat";
+
+            for (let user in userContributions) {
+                if (userContributions[user].score > maxScore) {
+                    maxScore = userContributions[user].score;
+                    topUser = user;
+                    razon = `${userContributions[user].actions} interacciones (Regalos / Comentarios clave)`;
+                }
+            }
+            return { user: topUser, reason: razon };
+        }
+
+        function verificarDerrota() {
+            if (currentHp <= 0 && !isBattleOver) {
+                isBattleOver = true;
+                currentHp = 0;
+                
+                // Mostrar gesto de derrota (faint)
+                const stage = bulbasaurChain.stages[currentStageIndex];
+                document.getElementById("player-sprite").src = stage.images.faint;
+
+                // Calcular MVP
+                const mvp = obtenerMVP();
+                document.getElementById("mvp-user-name").innerText = mvp.user;
+                document.getElementById("mvp-reason").innerText = `Destacado por: ${mvp.reason}`;
+                document.getElementById("game-result-text").innerText = `¡Tu ${stage.name} se ha quedado sin Puntos de Vida! La pelea ha terminado.`;
+                
+                // Mostrar modal
+                document.getElementById("game-over-modal").classList.remove("hidden");
+                updateUI();
+            }
+        }
+
+        function reiniciarPelea() {
+            isBattleOver = false;
+            currentStageIndex = 0;
+            currentHp = bulbasaurChain.stages[0].hp;
+            maxHp = bulbasaurChain.stages[0].hp;
+            currentExp = 0;
+            enemyCurrentHp = enemyMaxHp;
+            userContributions = {};
+            document.getElementById("game-over-modal").classList.add("hidden");
+            updateUI();
+            addChatFeed("SISTEMA", "¡Nueva pelea iniciada! ¡Listos para apoyar en el chat!");
+        }
 
         function updateUI() {
             const stage = bulbasaurChain.stages[currentStageIndex];
             
             document.getElementById("poke-name").innerText = `${stage.name} (#${stage.pokedexId})`;
             document.getElementById("stage-badge").innerText = `Fase ${stage.stage} / 3`;
-            document.getElementById("player-sprite").src = stage.images.idle;
+            if (!isBattleOver) {
+                document.getElementById("player-sprite").src = stage.images.idle;
+            }
             document.getElementById("enemy-sprite").src = POKEMON_IMAGES.enemyDefault;
 
             const hpPercent = Math.max(0, Math.min(100, (currentHp / maxHp) * 100));
@@ -420,6 +455,7 @@
         }
 
         function tapBoostHp() {
+            if (isBattleOver) return;
             if (currentHp < maxHp) {
                 currentHp = Math.min(maxHp, currentHp + 4);
                 showFloatingText(document.getElementById("player-container"), "+4 HP", "text-emerald-400");
@@ -427,15 +463,18 @@
             }
         }
 
-        // Simula la interacción del chat de TikTok cuando comentan "1" o "2"
-        function simularChat(opcion) {
+        function simularComentarioChat(opcion) {
+            if (isBattleOver) return;
+            const usuario = document.getElementById("sim-username").value || "@EspectadorAnonimo";
+            registrarContribucion(usuario, 10, "Comentario de ataque");
+            addChatFeed(usuario, opcion === '1' ? "¡Ataca con movimiento básico!" : "¡Apoyando con todo!");
+
             const stage = bulbasaurChain.stages[currentStageIndex];
             const playerSprite = document.getElementById("player-sprite");
             const enemySprite = document.getElementById("enemy-sprite");
 
             if (opcion === '1') {
-                // Jugador 1 Ataca (M.U.G.E.N Dash Animation)
-                addChatFeed("UsuarioChat", "1");
+                // Gestos de ataque utilizando las imágenes definidas
                 playerSprite.src = stage.images.attack;
                 playerSprite.classList.add("mugen-attack-p1");
 
@@ -443,7 +482,6 @@
                     enemyCurrentHp = Math.max(0, enemyCurrentHp - 25);
                     enemySprite.classList.add("mugen-hit");
                     showFloatingText(document.getElementById("enemy-container"), "-25 HP", "text-rose-500 font-bold text-xl");
-                    AudioFX.playHit();
                     updateUI();
                 }, 150);
 
@@ -452,32 +490,37 @@
                     playerSprite.classList.remove("mugen-attack-p1");
                     enemySprite.classList.remove("mugen-hit");
                 }, 350);
-
-            } else if (opcion === '2') {
-                // Jugador 2 (Rival) Ataca de vuelta
-                addChatFeed("UsuarioChat", "2");
-                enemySprite.classList.add("mugen-attack-p1"); // Efecto de embestida rival
-
-                setTimeout(() => {
-                    currentHp = Math.max(0, currentHp - 20);
-                    playerSprite.classList.add("mugen-hit");
-                    showFloatingText(document.getElementById("player-container"), "-20 HP", "text-rose-400 font-bold text-xl");
-                    AudioFX.playHit();
-                    updateUI();
-                }, 150);
-
-                setTimeout(() => {
-                    playerSprite.classList.remove("mugen-hit");
-                    enemySprite.classList.remove("mugen-attack-p1");
-                }, 350);
             }
         }
 
+        function simularEspecialChat() {
+            if (isBattleOver) return;
+            const usuario = document.getElementById("sim-username").value || "@EspectadorAnonimo";
+            registrarContribucion(usuario, 40, "Ataque Especial (Ulti)");
+            addChatFeed(usuario, "✨ ¡Ejecutó ATACA ESPECIAL (ULTI)! ✨");
+
+            const stage = bulbasaurChain.stages[currentStageIndex];
+            const playerSprite = document.getElementById("player-sprite");
+            
+            // Gesto al realizar ataque especial
+            playerSprite.src = stage.images.special;
+            playerSprite.classList.add("mugen-evolving");
+
+            setTimeout(() => {
+                enemyCurrentHp = Math.max(0, enemyCurrentHp - 60);
+                showFloatingText(document.getElementById("enemy-container"), "-60 ULT!", "text-purple-400 font-extrabold text-2xl");
+                playerSprite.classList.remove("mugen-evolving");
+                playerSprite.src = stage.images.idle;
+                updateUI();
+            }, 1000);
+        }
+
         function playerAttack() {
-            simularChat('1');
+            simularComentarioChat('1');
         }
 
         function selectStageByQuery(query) {
+            if (isBattleOver) return;
             const idx = parseInt(query) - 1;
             if (idx >= 0 && idx < bulbasaurChain.stages.length) {
                 setStage(idx);
@@ -491,7 +534,6 @@
             currentHp = stage.hp;
             currentExp = 0;
             
-            AudioFX.playEvolve();
             const playerSprite = document.getElementById("player-sprite");
             playerSprite.classList.add("mugen-evolving");
 
@@ -502,6 +544,25 @@
 
             addChatFeed("EVOLUCIÓN", `¡Tu Pokémon evolucionó a ${stage.name}! ✨`);
             updateUI();
+        }
+
+        function sendGift(giftType) {
+            if (isBattleOver) return;
+            const usuario = document.getElementById("sim-username").value || "@DonadorVIP";
+            let expGained = 0;
+            let giftName = "";
+            let giftPoints = 0;
+            
+            if (giftType === 'rose') { 
+                expGained = 15; giftName = "Rosa 🌹"; streamerLikes += 50; giftPoints = 30; 
+            } else if (giftType === 'donut') { 
+                expGained = 60; giftName = "Dónut 🍩"; streamerLikes += 250; giftPoints = 100; 
+            }
+
+            registrarContribucion(usuario, giftPoints, `Regalo: ${giftName}`);
+            addExp(expGained);
+            addChatFeed(usuario, `¡Envió ${giftName}! (+${expGained} EXP) [MVP Score +${giftPoints}]`);
+            showFloatingText(document.getElementById("player-container"), `+${expGained} EXP`, "text-amber-300 font-bold");
         }
 
         function addExp(amount) {
@@ -516,25 +577,12 @@
             }
         }
 
-        function sendGift(giftType) {
-            let expGained = 0;
-            let giftName = "";
-            
-            if (giftType === 'rose') { expGained = 15; giftName = "Rosa 🌹"; streamerLikes += 50; }
-            else if (giftType === 'donut') { expGained = 60; giftName = "Donut 🍩"; streamerLikes += 250; }
-            else if (giftType === 'crown') { expGained = 150; giftName = "Corona 👑"; streamerLikes += 1000; }
-
-            addExp(expGained);
-            addChatFeed("TikTokGift", `¡Envió ${giftName}! (+${expGained} EXP)`);
-            showFloatingText(document.getElementById("player-container"), `+${expGained} EXP`, "text-amber-300 font-bold");
-        }
-
         function addChatFeed(user, text) {
             const chatBox = document.getElementById("live-chat-box");
             const msgDiv = document.createElement("div");
             msgDiv.className = "bg-slate-900 p-2 rounded-lg border border-slate-800 text-xs";
             msgDiv.innerHTML = `<span class="font-bold text-pink-400">${user}:</span> <span class="text-slate-200">${text}</span>`;
-            chatBox.appendChild(msgDiv);
+            chatBox.appendChild(chatBox.appendChild(msgDiv));
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
@@ -548,9 +596,31 @@
             setTimeout(() => el.remove(), 1200);
         }
 
+        // Simulación periódica de daño enemigo para que la pelea avance y active el fin de juego si llega a 0 HP
+        setInterval(() => {
+            if (!isBattleOver && currentHp > 0) {
+                currentHp = Math.max(0, currentHp - 5);
+                const playerSprite = document.getElementById("player-sprite");
+                const stage = bulbasaurChain.stages[currentStageIndex];
+                
+                // Gesto al recibir daño (hit)
+                playerSprite.src = stage.images.hit;
+                playerSprite.classList.add("mugen-hit");
+                
+                setTimeout(() => {
+                    if (!isBattleOver) playerSprite.src = stage.images.idle;
+                    playerSprite.classList.remove("mugen-hit");
+                }, 400);
+
+                showFloatingText(document.getElementById("player-container"), "-5 HP", "text-rose-400 font-bold");
+                updateUI();
+                verificarDerrota();
+            }
+        }, 6000);
+
         window.onload = function() {
             updateUI();
-            addChatFeed("SISTEMA", "¡Simulador configurado con rutas locales y animaciones estilo M.U.G.E.N!");
+            addChatFeed("SISTEMA", "¡Simulador configurado con sistema de MVP, fondo de escenario y 10 movimientos por Pokémon!");
         };
     </script>
 </body>
